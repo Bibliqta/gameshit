@@ -1,6 +1,6 @@
 const Game = new Phaser.Game(1350, 600, Phaser.AUTO, 'game-canvas', { preload, create,update })
 
-let character, buttons, background, startbutton
+let character, buttons, startbutton
 
 function preload() {
     Game.load.image ('BackGround','Background.png')
@@ -9,12 +9,16 @@ function preload() {
     
 }
 
-function create() {
+function create(){
+    let background = Game.add.sprite(0,0,'BackGround')
     Game.stage.backgroundColor = '#182d3b'
 
-    background = Game.add.tileSprite(0, 0, 800, 600, 'BackGround')
-    startbutton = Game.add.button(Game.world.centerX - 400, 300, 'button', actionOnClick)
-    
+    background .width=Game.width
+    background.height=Game.height
+    startbutton = Game.add.text(500, 500, 'Start', {fill: 'white', shadowColor: 'black'})
+    startbutton.setInteractive()
+    console.log(startbutton)
+
      character = Game.add.sprite(0,500, 'Character')
      
     character.scale.set (0.03)
@@ -55,10 +59,4 @@ function update() {
     if (KeyS.isDown&&character.y<550) {
         character.y+=5; 
     }
-}
-
-function actionOnClick () {
-
-    background.visible =! background.visible;
-
 }
