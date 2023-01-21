@@ -9,6 +9,8 @@ function preload() {
     Game.load.image('platform', 'rock.png');
     Game.load.image('menuBackground', 'menu_bg.png');
     Game.load.spritesheet('playButton', 'play_button.png', 64, 64);
+    Game.load.spritesheet('settingsButton', 'settings_button.png', 64, 64);
+    Game.load.image('pauseMenuBackground', 'pause_menu_bg.png');
 }
 
 function create(){
@@ -23,8 +25,9 @@ function create(){
     playButton.anchor.set(0.5);
     playButton.scale.set(2);
 
-    settingsButton = Game.add.button(Game.width - 50, 50, 'settingsButton', openSettings, this);
-    settingsButton.scale.set(0.5);
+    settingsButton = Game.add.button(Game.width / 2, 300 + playButton.height + 10, 'settingsButton', openSettings, this);
+settingsButton.anchor.set(0.5);
+settingsButton.scale.set(2);
 
     settingsFrame = Game.add.sprite(Game.width / 2, Game.height / 2, 'settingsFrame');
     settingsFrame.anchor.set(0.5);
@@ -56,6 +59,9 @@ function create(){
     KeyD = Game.input.keyboard.addKey(Phaser.KeyCode.D);
     SpaceKey = Game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
     ControlKey = Game.input.keyboard.addKey(Phaser.KeyCode.CONTROL);
+    let escapeKey = Game.input.keyboard.addKey(Phaser.Keyboard.ESC);
+escapeKey.onDown.add(showMenu, this);
+
 }
 
 function update() {
@@ -92,12 +98,22 @@ function startGame() {
     playButton.visible = false;
     backGround.visible = true;
     canMove = true;
+    Game.physics.arcade.isPaused = false;
+    canMove = true;
 }
 
-function openSettings() {
-    menuBackground.visible = false;
-    titleText.visible = false;
-    playButton.visible = false;
-    settingsButton.visible = false;
-    settingsFrame.visible = true;
+import { openSettings } from "./settings.js";
+
+function showMenu() {
+    menuBackground.visible = true;
+    titleText.visible = true;
+    playButton.visible = true;
+    settingsButton.visible = true;
+    settingsFrame.visible = false;
+    backGround.visible = false;
+    canMove = false;
+    Game.physics.arcade.isPaused = true;
+    pauseMenuBackground.visible = true;
+    pauseTitleText.visible = true;
+    settingsButton.visible = true;
 }
