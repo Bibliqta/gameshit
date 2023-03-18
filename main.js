@@ -42,7 +42,7 @@ function create(){
     background.addTilesetImage('32x32_tileset_terrains_1','terrain');
     background.addTilesetImage('32x32_tileset_vikings_city','vikingcity');
     background.addTilesetImage('32x32_tileset_terrains_castle','castle');
-
+    
     l1= background.createLayer('layer1');
     l2 = background.createLayer('layer2');
     l3 = background.createLayer('layer3');
@@ -53,8 +53,9 @@ function create(){
      l4.visible=false;
 
   
+     background.setCollisionByExclusion([],true,l3)
     character = Game.add.sprite(0,500, 'Character');
-    character.scale.set (0.03);
+    character.scale.set (0.02);
     character.frame = 1;
     Game.physics.arcade.enable(character);
     character.body.collideWorldBounds = true;
@@ -73,16 +74,18 @@ function create(){
     KeyD = Game.input.keyboard.addKey(Phaser.KeyCode.D);
     SpaceKey = Game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
     ControlKey = Game.input.keyboard.addKey(Phaser.KeyCode.CONTROL);
-    let escapeKey = Game.input.keyboard.addKey(Phaser.Keyboard.ESC);
-    escapeKey.onDown.add(showMenu, this);
+    var escapeKey = Game.input.keyboard.addKey(Phaser.Keyboard.ESC);
+    escapeKey.onUp.add(showMenu);
 }
 
 function update() {
     if (!canMove) {
         return;
     }
+
     Game.physics.arcade.collide(character, rock);
 
+    // Handle player movement
     if (buttons.left.isDown || Game.input.keyboard.isDown(Phaser.Keyboard.A)) {
         character.body.velocity.x = -250;
     } else if (buttons.right.isDown || Game.input.keyboard.isDown(Phaser.Keyboard.D)) {
@@ -91,7 +94,6 @@ function update() {
         character.body.velocity.x = 0;
     }
     
-    
     if (buttons.up.isDown || Game.input.keyboard.isDown(Phaser.Keyboard.W)) {
         character.body.velocity.y = -250;
     } else if (buttons.down.isDown || Game.input.keyboard.isDown(Phaser.Keyboard.S)) {
@@ -99,6 +101,14 @@ function update() {
     } else {
         character.body.velocity.y = 0;
     }
+
+    // Collide the player character with the third layer of the tilemap
+    Game.physics.arcade.collide(character, l3, call);
+}
+
+
+function call() {
+    console.log("Player collided with third layer of tilemap");
 }
 
 function onHover() {
@@ -135,6 +145,7 @@ function startGame() {
 
 function openSettings() {
     menuBackground.visible = true;
+    backgroundlayers(false);
     titleText.visible = false;
     playButton.visible = false;
     character.visible = false;
@@ -148,6 +159,7 @@ function openSettings() {
 
 function goBack() {
     backButton.visible = false;
+    backgroundlayers(false);
     menuBackground.visible = true;
     titleText.visible = true;
     playButton.visible = true;
@@ -164,8 +176,10 @@ function goBack() {
 }
 
 function showMenu() {
+    console.log('Menu shown');
     backButton.visible = false;
     rock.visible = false;
+    backgroundlayers(false);
     menuBackground.visible = true;
     titleText.visible = true;
     playButton.visible = true;
